@@ -1,0 +1,35 @@
+language: julia
+dist: trusty
+os:
+- linux
+julia:
+- 1.0
+notifications:
+  email: false
+git:
+  depth: 99999999
+cache:
+  timeout: 1000
+  directories:
+  - downloads
+  - shards
+env:
+  global:
+  - BINARYBUILDER_DOWNLOADS_CACHE=downloads
+  - BINARYBUILDER_SHARDS_DIR=shards
+  - BINARYBUILDER_AUTOMATIC_APPLE=true
+  - BINARYBUILDER_USE_CCACHE=true
+sudo: required
+before_script:
+- julia -e 'using Pkg; pkg"add BinaryProvider"; pkg"add BinaryBuilder#master"; Pkg.build()'
+script:
+- julia build_tarballs.jl
+deploy:
+  provider: releases
+  api-key:
+    secure: gkxA4OFZPZOAAv+/9Y9EXSRoyxBR0p1EV6IfHPHRielempF4SJ3qmKm1Z8hXTGv3mMM+2QDHc09akibLFfd4SK8eS4oQBAJYzI6mG+ATJnLMLkuKzmu4lanbZfb4PQkk3tG0FVo2XFcMcj8qI0csT66Z76ekGCy/3kFZwz3c9Yi54RYDnDowMCa3iBPa0xCK9Fa/+ysVok6t165W1dIXBteQuhDhRslNnxiAl3uCLAcfPwM793Gi82yN1zcdpZkkiprKyZyq7KXUzJHoT9pw/1Ry+YICglOurL7ilsuUtpwyIfFnZOElKkDfvpb/ijw1E/U3qgKRjE9zPDzMVpyQyzgSbHTD5hnsJgGrnyygY0rGlnpMxJoP7NdN5xcoWemuBvcnEl7kanC0Qa6UUuBb4JLG7PLtAnVw9gXIr/XoB9+QTWSWE+S2kwiyAfLXlWHTRamzXGkX/pZSB/pyOYvTthL+Mf7XumlT7oBWFT5mipZ3nKTzOuFTzPgS5jhHmrJow9TfiSOsnCS9FUfyr3FYleTrNo/ZD5Ys0ojjqeBXZsGNYoUPm9eZj/2rUd8GvUqxymR6x2etnwLtRN/vKLsy71AmBNH/ypXekPV1RqZMbd9xUIia1SJIcb3nKuBKjEMu2gvhCpzsAb7mfExouivTZY7xy+lIpMZwqyYMlQK08xI=
+  file_glob: true
+  file: products/*
+  skip_cleanup: true
+  on:
+    repo: JuliaIO/x264Builder
